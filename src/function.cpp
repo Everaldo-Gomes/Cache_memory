@@ -38,39 +38,36 @@ void Function :: menu() {
 
 
 void Function :: main_memory_initializer() {
-  
+
   cout <<"\t\t\t  MAIN MEMORY\n\n"
        <<"\t\t Cell \t\t\b\b\b\bValue \tAddress\n\n";
-  
+
   main_memory.resize(main_memory_cell);
   int block_counter = 0, block_qnt = 0;
   
   for(int i = 0; i < main_memory_cell; i++) {
     
     if(block_counter == 2) {   
-      cout << "Block " << block_qnt << "\b\b\b\b\b";  //delete blank spaces 
+      cout << "\033[1;36mBlock " << block_qnt << "\033[0m\b\b\b\b\b";
     }
-     
+
     int aux_rand = rand() % 10000000;      // random values int
     int aux_address = i;                   // memory address int
     bitset<8> binary_value(aux_rand);      // randon values binary
     bitset<8> binary_address(aux_address); // memory address binary
-
     
     main_memory[i].push_back({binary_value, binary_address}); // save values
 
-
-    cout << "\t\t|------------------|\n"
-	 << "\t\t| " << i << " --- ";
+    cout << "\t\t\033[1;32m|------------------|\n"
+	 << "\t\t|\033[0m " << i << " --- ";
     
     if(i < 10) { cout << "  "; }                 //just some black spaces
     else if(i >= 10 && i < 100) { cout << " "; } //just some black spaces
     
-    cout << binary_value << " |\t" << binary_address; // show the values
+    cout << binary_value << "\033[1;32m |\033[0m\t" << binary_address; // show the values
     
-    //organazing the blocks
     if(block_counter == 3) {
-      cout << "\n\t\t|------------------|\n\n";
+      cout << "\n\t\t\033[1;32m|------------------|\033[0m\n\n";
       block_counter = 0;
       block_qnt++;
     }
@@ -83,8 +80,8 @@ void Function :: main_memory_initializer() {
 
 void Function :: cache_memory_initializer() {
 
-  cout <<"\t\t\t  CACHE MEMORY";
-
+  cout <<"\t\t\t  CACHE MEMORY\n\n";
+  
 
   
 }
