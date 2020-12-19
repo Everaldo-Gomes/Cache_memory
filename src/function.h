@@ -23,12 +23,18 @@ class Function {
   int hit_write = 0;
   int miss_write = 0;
   double average_write = 0.0;
+  
+  int hit_miss_read = 0;
+  int hit_miiss_write = 0;
+  double average_hit_miss_write = 0.0;
 
-  
-  
+
   vector<vector<pair<bitset<8>, bitset<8>>>> main_memory;
-  //vector<bitset<8>> main_memory;
 
+  int cache_memory_lfu = 0;
+  vector<vector<bitset<8>>> cache_memory;
+  
+  
   //methods
   Function(); // constructor
   void info_students();
@@ -37,6 +43,7 @@ class Function {
 
   void main_memory_initializer();
   void cache_memory_initializer();
+  void read_content_mainmemory();
 };
 
 

@@ -39,8 +39,8 @@ void Function :: menu() {
 
 void Function :: main_memory_initializer() {
 
-  cout <<"\t\t\t  MAIN MEMORY\n\n"
-       <<"\t\t Cell \t\t\b\b\b\bValue \tAddress\n\n";
+  cout <<"\t\t\t Main Memory\n\n"
+       <<"\t\t   Value \t Address\n\n";
 
   main_memory.resize(main_memory_cell);
   int block_counter = 0, block_qnt = 0;
@@ -58,16 +58,12 @@ void Function :: main_memory_initializer() {
     
     main_memory[i].push_back({binary_value, binary_address}); // save values
 
-    cout << "\t\t\033[1;32m|------------------|\n"
-	 << "\t\t|\033[0m " << i << " --- ";
-    
-    if(i < 10) { cout << "  "; }                 //just some black spaces
-    else if(i >= 10 && i < 100) { cout << " "; } //just some black spaces
+    cout << "\t\t\033[1;32m|----------|\n" << "\t\t|\033[0m " ;
     
     cout << binary_value << "\033[1;32m |\033[0m\t" << binary_address; // show the values
     
     if(block_counter == 3) {
-      cout << "\n\t\t\033[1;32m|------------------|\033[0m\n\n";
+      cout << "\n\t\t\033[1;32m|----------|\033[0m\n\n";
       block_counter = 0;
       block_qnt++;
     }
@@ -78,11 +74,44 @@ void Function :: main_memory_initializer() {
   } 
 }
 
+
 void Function :: cache_memory_initializer() {
-
-  cout <<"\t\t\t  CACHE MEMORY\n\n";
   
+  cout <<"\t\t\t  Cache Memory\n\n"
+       << "   Valid-bit \t  Tag \t\t\b\b\bDirty-bit \t Data \t\t\bCount [LFU]\n\n";
+  
+  const int column_size = 5;
+  cache_memory.resize(cache_memory_row, vector<bitset<8>>(column_size,0));
 
+  cout << "\033[1;32m   |--------------------------------------------------------------|\033[0m\n";
+  
+  for(int i = 0; i < cache_memory_row; i++) {
+    cout << "   \033[1;32m|\b\b\b\033[0m";
+    
+    for(int j = 0; j < column_size; j++) {
+      bitset<8> aa(0);
+      
+      if(j == 0 || j == 2) { //valid, dirty bitand
+	cache_memory[i][j] = aa;
+	bitset<1> bb(0);
+	cout << "\t" << bb;
+      } 
+      else { // tag, data, counter (lfu)
+	cache_memory[i][j] = aa;
+	cout << "\t" << aa;
+      }      
+    }
+    
+    cout << "\033[1;32m  |\n\033[1;32m   |--------------------------------------------------------------|\033[0m\n";
+  }
+  
+  cout << "\n\n\n";
+}
+
+
+void Function :: read_content_mainmemory() { //option 1
   
 }
+
+
 
