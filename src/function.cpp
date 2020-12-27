@@ -77,41 +77,69 @@ void Function :: main_memory_initializer() {
 
 void Function :: cache_memory_initializer() {
   
-  cout <<"\t\t\t  Cache Memory\n\n"
-       << "   Valid-bit \t  Tag \t\t\b\b\bDirty-bit \t Data \t\t\bCount [LFU]\n\n";
-  
-  const int column_size = 5;
-  cache_memory.resize(cache_memory_row, vector<bitset<8>>(column_size,0));
+  cout <<"\t\t\t\t\t\t  Cache Memory\n\n"
+       << "   Valid-bit \t   Tag \t\t\b\b\bDirty-bit \t Data1  \t Data2  \t Data3  \t Data4 \t\t\bCount [LFU]\n\n";
+ 
+  cache_memory.resize(cache_memory_row, vector<bitset<8>>(cache_memory_column,0));
 
-  cout << "\033[1;32m   |--------------------------------------------------------------|\033[0m\n";
+  cout << "\033[1;32m   |--------------------------------------------------------------------------------------------------------------|\033[0m\n";
   
   for(int i = 0; i < cache_memory_row; i++) {
     cout << "   \033[1;32m|\b\b\b\033[0m";
     
-    for(int j = 0; j < column_size; j++) {
+    for(int j = 0; j < cache_memory_column; j++) {
       bitset<8> aa(0);
-      
-      if(j == 0 || j == 2) { //valid, dirty bitand
-	cache_memory[i][j] = aa;
+      cache_memory[i][j] = aa;
+	
+      if(j == 0 || j == 2) { //valid, dirty bit
 	bitset<1> bb(0);
 	cout << "\t" << bb;
-      } 
-      else { // tag, data, counter (lfu)
-	cache_memory[i][j] = aa;
+      }
+      else if(j == 1) { //tag
+	bitset<5> bb(0);
+	cout << "\t   " << bb << "\t\b\b\b";
+      }
+      else { //data, counter (LFU)
 	cout << "\t" << aa;
       }      
     }
-    
-    cout << "\033[1;32m  |\n\033[1;32m   |--------------------------------------------------------------|\033[0m\n";
+    cout << "\033[1;32m  |\n\033[1;32m   |--------------------------------------------------------------------------------------------------------------|\033[0m\n";
   }
-  
   cout << "\n\n\n";
 }
 
 
-void Function :: read_content_mainmemory() { //option 1
+bool Function :: search_tag_cache_memory(bitset<8> tag) {
   
+  bool found = false;
+
+  for(int i = 0; i < cache_memory_row; i++) {    
+    
+  }
+  
+  return found;
 }
 
+void Function :: read_content_main_memory() { //option 1
+  
+    cout << "\t Enter the address ";
+    
+    bitset<8> typed_address;
+    cin >> typed_address;
 
+    //first, search for it in the cache memory
+    search_tag_cache_memory(typed_address);
+    
+    
 
+    
+    //search for the data using the typed address in the main memory
+    // for(int i = 0; i < main_memory.size(); i++) {
+    //   for(auto [data, address] : main_memory[i]) {
+    // 	if(address == typed_address) {
+    // 	  cout << data << "<--";
+    // 	}
+    //   }
+    // }
+
+}

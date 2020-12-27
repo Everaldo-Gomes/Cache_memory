@@ -17,7 +17,7 @@ int main() {
 
     switch (choice) {	
     case 1:
-      //obj.read_content();
+      obj.read_content_main_memory();
       break;
 	
     case 2:
