@@ -6,6 +6,9 @@ using namespace std;
 
 // just declarations
 
+#define bit_qnt 7
+#define bit_identify_block 5
+
 class Function {
 
  private:

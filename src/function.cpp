@@ -54,8 +54,8 @@ void Function :: main_memory_initializer() {
 
     int aux_rand = rand() % 10000000;      // random values int
     int aux_address = i;                   // memory address int
-    bitset<7> binary_value(aux_rand);      // randon values binary
-    bitset<7> binary_address(aux_address); // memory address binary
+    bitset<bit_qnt> binary_value(aux_rand);      // randon values binary
+    bitset<bit_qnt> binary_address(aux_address); // memory address binary
     
     main_memory[i].push_back({binary_value, binary_address}); // save values
 
@@ -81,7 +81,7 @@ void Function :: cache_memory_initializer() {
   cout <<"\t\t\t\t\t\t  Cache Memory\n\n"
        << "   Valid-bit \t   Tag  \t\b\b\bDirty-bit \t Data1  \t Data2  \t Data3  \t Data4 \t\t\bCount [LFU]\n\n";
  
-  cache_memory.resize(cache_memory_row, vector<bitset<7>>(cache_memory_column,0));
+  cache_memory.resize(cache_memory_row, vector<bitset<bit_qnt>>(cache_memory_column,0));
 
   cout << "\033[1;32m   |--------------------------------------------------------------------------------------------------------------|\033[0m\n";
   
@@ -89,7 +89,7 @@ void Function :: cache_memory_initializer() {
     cout << "   \033[1;32m|\b\b\b\033[0m";
     
     for(int j = 0; j < cache_memory_column; j++) {
-      bitset<7> aa(0);
+      bitset<bit_qnt> aa(0);
       cache_memory[i][j] = aa;
 	
       if(j == 0 || j == 2) { //valid, dirty bit
@@ -123,7 +123,7 @@ void Function :: update_info() {
     for(int j = 0; j < cache_memory_column; j++) {	
 
       if(j == 0 || j == 2) { //valid, dirty bit
-	bitset<7> aux(cache_memory[i][j]);
+	bitset<bit_qnt> aux(cache_memory[i][j]);
 	cout << "\t" << aux[0];
       }
       else { // tag, data, counter (LFU)
@@ -168,7 +168,7 @@ void Function :: update_info() {
   menu();
 }
 
-bool Function :: cache_memory_search_tag(bitset<7> typed_address) {
+bool Function :: cache_memory_search_tag(bitset<bit_qnt> typed_address) {
   
   bool found = false;
   int count_bit_hit = 0;
@@ -178,7 +178,7 @@ bool Function :: cache_memory_search_tag(bitset<7> typed_address) {
 
     if(cache_memory[i][valid_bit_column] == 1) { //exist some data in this row
     
-      bitset<7> fetched_tag(cache_memory[i][tag_column]);
+      bitset<bit_qnt> fetched_tag(cache_memory[i][tag_column]);
 
       //compare the fethed tag
       for(int j = 0; i < 6; i++) {	
@@ -218,9 +218,8 @@ void Function :: read_content_main_memory() { //option 1
 
   cout << "\t Enter the address ";
 
-  bitset<7> typed_address;
+  bitset<bit_qnt> typed_address;
   cin >> typed_address;
-
   
   //first, search for it in the cache memory
   bool tag_found = cache_memory_search_tag(typed_address);
@@ -241,7 +240,7 @@ void Function :: read_content_main_memory() { //option 1
 
       //set valid bit
       int set_bit_int = 1;
-      bitset<7> set_bit(set_bit_int);
+      bitset<bit_qnt> set_bit(set_bit_int);
       cache_memory[free_row_index][valid_bit_column] = set_bit;
       
       //set tag
@@ -249,23 +248,39 @@ void Function :: read_content_main_memory() { //option 1
 
       //set dirty-bit
       cache_memory[free_row_index][dirty_bit_column] = set_bit;
+
+
+      /*
+      bitset<bit_identify_block> ab;
+      for(int i = bit_identify_block; i >= 1; i--) {
+	ab[i] = typed_address[i];
+	cout << ab[i-1] << "\t" << typed_address[i] << "\t" << i << endl;
+      }
+
+      cout << "\n\n";
       
+      cout << ab << endl;
+      int block_number = (int)(ab.to_ulong());
+      cout << block_number << endl;
+      
+      //cout << new_str.stoi();
+      //bitset<8> bb(new_str);
+      //cout << bb << endl;
+      */
       
       //set data1
-      //      std::stoi()
-      
       //set data2
       //set data3
       //set data4
       
       //increment count LFU
-      //cache_memory[free_row_index][count_column] += set_bit;
-      // bitset<7> a(1);
-      // bitset<7> b(2);
-      // bitset<7> c(a+b);
-      // cout << c << endl;
-      
-      update_info();
+      int aux_int;
+      aux_int = (int)(cache_memory[free_row_index][count_column].to_ulong()); //convert binary to int
+      aux_int += 1; //increment int by 1
+      bitset<bit_qnt> aux(aux_int);  //convert the new value to binary
+      cache_memory[free_row_index][count_column] = aux; //save the value
+
+      //update_info();
     }   
   }
 }
