@@ -4,7 +4,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// just declarations
 
 #define bit_qnt 7
 #define bit_identify_block 5
@@ -20,10 +19,7 @@ class Function {
   const int valid_bit_column = 0;
   const int tag_column = 1;
   const int dirty_bit_column = 2;
-  const int data1_column = 3;
-  const int data2_column = 4;
-  const int data3_column = 5;
-  const int data4_column = 6;
+  const int data_column = 3; // 3 - 6
   const int count_column = 7;
 
   int hit_read = 0;
@@ -38,13 +34,17 @@ class Function {
   int hit_miiss_write = 0;
   double average_hit_miss_write = 0.0;
 
-  vector<vector<pair<bitset<7>, bitset<7>>>> main_memory;
-  vector<vector<bitset<7>>> cache_memory;
+  vector<vector<pair<bitset<bit_qnt>, bitset<bit_qnt>>>> main_memory;
+  vector<vector<bitset<bit_qnt>>> cache_memory;
   
   //methods
-  bool cache_memory_search_tag(bitset<7>);
+  bool cache_memory_search_tag(bitset<bit_qnt>);
   bool cache_memory_check_valid_bit_0();
   void update_info();
+  int  get_block_number(bitset<bit_qnt>);
+  int  find_beginning_block(bitset<bit_qnt>, int);
+  void copy_block_to_cache(int, int);
+  
   
  public:
   
