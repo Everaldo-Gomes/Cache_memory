@@ -11,6 +11,7 @@ using namespace std;
 class Function {
 
  private:
+  
   //instances
   
   const int main_memory_cell = 128;
@@ -34,17 +35,24 @@ class Function {
   int hit_miiss_write = 0;
   double average_hit_miss_write = 0.0;
 
+  int cache_memory_tag_line = 0;
+  
   vector<vector<pair<bitset<bit_qnt>, bitset<bit_qnt>>>> main_memory;
   vector<vector<bitset<bit_qnt>>> cache_memory;
   
+  
   //methods
+  
   bool cache_memory_search_tag(bitset<bit_qnt>);
   bool cache_memory_check_valid_bit_0();
-  void update_info();
+  int  cache_memory_get_displacement(bitset<bit_qnt>);
+  void cache_memory_increment_lfu(int);
+  bitset<bit_qnt> main_memory_get_value(bitset<bit_qnt>);
   int  get_block_number(bitset<bit_qnt>);
   int  find_beginning_block(bitset<bit_qnt>, int);
   void copy_block_to_cache(int, int);
-  
+  void update_info();
+
   
  public:
   

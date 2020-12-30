@@ -39,7 +39,7 @@ void Function :: update_info() {
   
   clean_screen();
   info_students();
-
+  
   //cache memory
   cout <<"\t\t\t\t\t\t  Cache Memory\n\n"
        << "   Valid-bit \t   Tag  \t\b\b\bDirty-bit \t Data1  \t Data2  \t Data3  \t Data4 \t\t\bCount [LFU]\n\n";

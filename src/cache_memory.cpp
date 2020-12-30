@@ -48,7 +48,7 @@ bool Function :: cache_memory_search_tag(bitset<bit_qnt> typed_address) {
       bitset<bit_qnt> fetched_tag(cache_memory[i][tag_column]);
 
       //compare the fethed tag
-      for(int j = 0; i < 6; i++) {	
+      for(int j = 0; j < 6; j++) {	
 	if(fetched_tag[j] != typed_address[j]) {
 	  count_bit_hit = 0;
 	  break;
@@ -58,6 +58,7 @@ bool Function :: cache_memory_search_tag(bitset<bit_qnt> typed_address) {
 
       if(count_bit_hit == 6) { //all bits matches, so the block is in the cache
 	found = true;
+	cache_memory_tag_line = i;
 	break;
       }
     }
@@ -91,4 +92,26 @@ void Function :: copy_block_to_cache(int free_row_index, int index) {
       cache_memory[free_row_index][data_index] = data;
     }
   } 
+}
+
+
+int Function :: cache_memory_get_displacement(bitset<bit_qnt> typed_address) {
+
+  bitset<2> displacement;
+  
+  for(int i = 0; i < 2; i ++) {
+    displacement[i] = typed_address[i];
+  }
+  
+  return (int)(displacement.to_ulong());
+}
+
+
+void Function :: cache_memory_increment_lfu(int index) {
+  
+  int aux_int;
+  aux_int = (int)(cache_memory[index][count_column].to_ulong()); //convert binary to int
+  aux_int += 1; 
+  bitset<bit_qnt> aux(aux_int);  //convert the new value to binary
+  cache_memory[index][count_column] = aux; //save the value
 }

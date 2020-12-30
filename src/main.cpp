@@ -12,7 +12,7 @@ int main() {
   Function obj; 
   
   while(!exit) {
-
+    
     cin >> choice;
 
     switch (choice) {	

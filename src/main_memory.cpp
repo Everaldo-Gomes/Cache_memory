@@ -73,19 +73,61 @@ int Function :: find_beginning_block(bitset<bit_qnt>, int current_block) {
   return i;
 }
 
+bitset<bit_qnt> Function :: main_memory_get_value(bitset<bit_qnt> typed_address) {
+
+  bitset<bit_qnt> value;
+  bool stop = false;
+  
+  for(unsigned int i = 0; i < main_memory.size(); i++) {
+    for(auto [data, address] : main_memory[i]) {
+      if(address == typed_address) {
+	value = data;
+	stop = true;
+	break;
+      }
+    }
+    if(stop) { break; }
+  }
+  return value;
+}
+
 
 void Function :: read_content_main_memory() { //option 1
 
   cout << "\t Enter the address ";
-
+  
   bitset<bit_qnt> typed_address;
   cin >> typed_address;
   
-  //first, search for it in the cache memory
   bool tag_found = cache_memory_search_tag(typed_address);
+  int current_block = get_block_number(typed_address);
+  int index = find_beginning_block(typed_address, current_block);
 
+  
+  //first, search for it in the cache memory
+  
   if(tag_found) { //the block is in the cache, read value...
+    
+    int displacement = cache_memory_get_displacement(typed_address);
       
+    hit_read += 1; 
+
+    //get the value in the cache memrory
+    bitset<bit_qnt> value(cache_memory[cache_memory_tag_line][data_column+displacement]);
+
+    //increment counter LFU
+    cache_memory_increment_lfu(cache_memory_tag_line); 
+
+    //show some info
+    cout << "\n\n\t Valor: " << value << "\n"
+	 << "\t Está na cache\n"
+	 << "\t Nº do quadro: " << cache_memory_tag_line << "\n"
+	 << "\t Deslocamento: " << displacement << "\n"
+     	 << "\t Nº do bloco: " << current_block << "\n\n"
+     	 << "\t Pressione [-Enter-] para continuar.\n\n";
+    
+      getchar();getchar();
+      update_info();
   }
   else { //copy all block to the cache memory
   
@@ -93,10 +135,12 @@ void Function :: read_content_main_memory() { //option 1
     
     //if cache is full
     if(free_row_index == -1) {
-      // i dont know how to do yet...
+      // replace some data in the cache
       
     }
     else { //there is at least one free row in the cache
+
+      miss_read++;
 
       //set valid bit
       int set_bit_int = 1;
@@ -109,20 +153,23 @@ void Function :: read_content_main_memory() { //option 1
       //set dirty-bit
       cache_memory[free_row_index][dirty_bit_column] = set_bit;
 
-
       //copying values to cache memory
-      int current_block = get_block_number(typed_address);
-      int index = find_beginning_block(typed_address, current_block);
       copy_block_to_cache(free_row_index, index);
       
       //increment count LFU
-      int aux_int;
-      aux_int = (int)(cache_memory[free_row_index][count_column].to_ulong()); //convert binary to int
-      aux_int += 1; 
-      bitset<bit_qnt> aux(aux_int);  //convert the new value to binary
-      cache_memory[free_row_index][count_column] = aux; //save the value
+      cache_memory_increment_lfu(free_row_index); 
 
-      update_info();
+      //getting the value
+      bitset<bit_qnt> value = main_memory_get_value(typed_address);
+      
+      //show some info
+      cout << "\n\n\t Valor: " << value << "\n"
+	   << "\t Valor nao esta na cache\n"
+	   << "\t Nº do bloco: " << current_block << "\n\n"
+	   << "\t Pressione [-Enter-] para continuar\n\n";
+      
+      getchar();getchar();
+      update_info();      
     }   
   }
 }
