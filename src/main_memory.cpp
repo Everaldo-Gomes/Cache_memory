@@ -92,6 +92,23 @@ bitset<bit_qnt> Function :: main_memory_get_value(bitset<bit_qnt> typed_address)
 }
 
 
+void Function :: main_memory_set_value(bitset<bit_qnt> new_address, bitset<bit_qnt> new_value) {
+  
+  bool stop = false;
+  
+  for(unsigned int i = 0; i < main_memory.size(); i++) {
+    for(auto [data, address] : main_memory[i]) {
+      if(address == new_address) {
+	data = new_value;
+	stop = true;
+	break;
+      }
+    }
+    if(stop) { break; }
+  }
+}
+
+
 void Function :: read_content_main_memory() { //option 1
 
   cout << "\t Enter the address ";
@@ -102,7 +119,7 @@ void Function :: read_content_main_memory() { //option 1
   bool tag_found = cache_memory_search_tag(typed_address);
   int current_block = get_block_number(typed_address);
   int index = find_beginning_block(typed_address, current_block);
-  int displacement = cache_memory_get_displacement(typed_address);
+  int displacement = get_displacement(typed_address);
   bitset<bit_qnt> set_bit(1);
 
   
@@ -124,20 +141,25 @@ void Function :: read_content_main_memory() { //option 1
 
   //copy all block in the cache memory
   else { 
-  
+
+    miss_read++;
     int free_row_index = cache_memory_check_valid_bit_0();
+
+
     
     if(free_row_index == -1) {  //if cache is full,  replace data using LFU policy
 
-      miss_read++;
 
       //get maximum counter's line
       int line = cache_memory_get_maximum_counter();
-
+      
+      //get value
+      bitset<bit_qnt> value(cache_memory[line][data_column+displacement]);
+      
       //check dirty bit
       bool dirty_bit = cache_memory_check_dirty_bit_0(line);
 
-      //overrite all data without saving
+      //overrite all data without saving ( dirty bit = 0 )
       if(dirty_bit) { 
 
 	//set tag
@@ -149,15 +171,27 @@ void Function :: read_content_main_memory() { //option 1
 	//set count LFU = 1
 	cache_memory[line][count_column] = set_bit;   
 
-	//get value
-	bitset<bit_qnt> value(cache_memory[line][data_column+displacement]);
-
 	show_info(value, cache_memory_tag_line, displacement, current_block, true);	
       }
 
-      //save the data in the main memory before change it
-      else { 
+      
+      /*
+	+++++++++++  IMPORTANT ++++++++++
+
+	the else below needs to be tested when finish the option 2
+      */
+      
+      //save the data in the main memory before change it ( dirty bit = 1)
+      else {
 	
+	//get some random place in the main memory 0 - 127
+	bitset<bit_qnt> place(rand() % 127);
+
+	//save the value
+	main_memory_set_value(place, value);
+	cout << place << " <- " << endl;
+
+	//do the same thing as the if above
       }
       
       update_info();
@@ -184,7 +218,37 @@ void Function :: read_content_main_memory() { //option 1
       bitset<bit_qnt> value = main_memory_get_value(typed_address);
       
       show_info(value, cache_memory_tag_line, displacement, current_block, false);
-      update_info();      
+      update_info();
     }   
   }
+}
+
+//DOING...
+void Function :: write_content_main_memory() { //option 2
+
+  bitset<bit_qnt> typed_address, typed_data;
+  
+  
+  cout << "\t Enter the address ";
+  cin >> typed_address;
+
+  cout << "\t Enter the value ";
+  cin >> typed_data;
+
+  //nned to write in the cache first 
+  get_block_number(typed_address) << endl;
+  get_displacement(typed_address) << endl;
+
+
+  //set value in the specific memory address
+  for(int i = 0; i < main_memory.size(); i++) {
+    for(auto [data, address] : main_memory[i]) {
+      if(address == typed_address) {
+	data = typed_data;
+      }
+    }
+  }
+  
+  getchar();  getchar();
+  update_info();      
 }

@@ -19,7 +19,7 @@ int main() {
       break;
 	
     case 2:
-      //obj.write_content();
+      obj.write_content_main_memory();
       break;
 	
     case 3:

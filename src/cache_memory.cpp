@@ -108,7 +108,7 @@ void Function :: copy_block_to_cache(int free_row_index, int index) {
 }
 
 
-int Function :: cache_memory_get_displacement(bitset<bit_qnt> typed_address) {
+int Function :: get_displacement(bitset<bit_qnt> typed_address) {
 
   bitset<2> displacement;
   

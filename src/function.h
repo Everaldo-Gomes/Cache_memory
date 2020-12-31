@@ -46,10 +46,11 @@ class Function {
   bool cache_memory_search_tag(bitset<bit_qnt>);
   int  cache_memory_check_valid_bit_0();
   bool cache_memory_check_dirty_bit_0(int);
-  int  cache_memory_get_displacement(bitset<bit_qnt>);
+  int  get_displacement(bitset<bit_qnt>);
   void cache_memory_increment_lfu(int);
   int  cache_memory_get_maximum_counter();
   bitset<bit_qnt> main_memory_get_value(bitset<bit_qnt>);
+  void main_memory_set_value(bitset<bit_qnt>, bitset<bit_qnt>);
   int  get_block_number(bitset<bit_qnt>);
   int  find_beginning_block(bitset<bit_qnt>, int);
   void copy_block_to_cache(int, int);
@@ -71,6 +72,7 @@ class Function {
   void main_memory_initializer();
   void cache_memory_initializer();
   void read_content_main_memory();
+  void write_content_main_memory();
   
 };
 
