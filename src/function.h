@@ -53,6 +53,7 @@ class Function {
   int  get_block_number(bitset<bit_qnt>);
   int  find_beginning_block(bitset<bit_qnt>, int);
   void copy_block_to_cache(int, int);
+  void show_info(bitset<bit_qnt>, int, int, int, bool);
   void update_info();
 
   
@@ -75,3 +76,30 @@ class Function {
 
 
 #endif
+
+
+
+
+/* trash:
+
+
+   cout << "\n\n\t Valor: " << value << "\n"
+   << "\t Valor nao estava na cache\n"
+   << "\t Nº do bloco: " << current_block << "\n\n"
+   << "\t Pressione [-Enter-] para continuar\n\n";
+
+
+   //set dirty-bit
+   //cannot change to 1 when read 
+   //cache_memory[free_row_index][dirty_bit_column] = set_bit;
+      
+
+      //show some info
+      // cout << "\n\n\t Valor: " << value << "\n"
+      // 	   << "\t Valor não estava na cache\n"
+      // 	   << "\t Nº do quadro: " << cache_memory_tag_line << "\n"
+      // 	   << "\t Deslocamento: " << displacement << "\n"
+      // 	   << "\t Nº do bloco: " << current_block << "\n\n"
+      // 	   << "\t Pressione [-Enter-] para continuar.\n\n";
+
+*/

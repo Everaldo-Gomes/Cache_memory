@@ -96,3 +96,29 @@ void Function :: update_info() {
 
   menu();
 }
+
+
+void Function :: show_info(bitset<bit_qnt> value, int tag_line, int d, int block, bool in_cache) {
+
+  bitset<bit_qnt> cache_memory_tag_line(tag_line);
+  bitset<bit_qnt> displacement(d);
+  bitset<bit_qnt> current_block(block);
+
+  string cache_no  = " Valor não estava na cache\n";
+  string cache_yes = " Valor estava na cache\n";
+  string result;
+
+  if(in_cache) { result = cache_yes; }
+  else { result = cache_no; }
+
+  
+  //show some info
+      cout << "\n\n\t Valor: " << value << "\n"
+	   << "\t" << result
+	   << "\t Nº do quadro: " << cache_memory_tag_line << " [ " << tag_line << " ]\n"
+	   << "\t Deslocamento: " << displacement << " [ " << d << " ]\n"
+	   << "\t Nº do bloco:  " << current_block << " [ " << block << " ]\n\n"
+	   << "\t Pressione [-Enter-] para continuar.\n\n";
+
+      getchar(); getchar();
+}

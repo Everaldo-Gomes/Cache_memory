@@ -118,18 +118,12 @@ void Function :: read_content_main_memory() { //option 1
     //increment counter LFU
     cache_memory_increment_lfu(cache_memory_tag_line); 
 
-    //show some info
-    cout << "\n\n\t Valor: " << value << "\n"
-	 << "\t Está na cache\n"
-	 << "\t Nº do quadro: " << cache_memory_tag_line << "\n"
-	 << "\t Deslocamento: " << displacement << "\n"
-     	 << "\t Nº do bloco: " << current_block << "\n\n"
-     	 << "\t Pressione [-Enter-] para continuar.\n\n";
-    
-      getchar();getchar();
-      update_info();
+    show_info(value, cache_memory_tag_line, displacement, current_block, true);
+    update_info();
   }
-  else { //copy all block in the cache memory
+
+  //copy all block in the cache memory
+  else { 
   
     int free_row_index = cache_memory_check_valid_bit_0();
     
@@ -145,10 +139,20 @@ void Function :: read_content_main_memory() { //option 1
 
       //overrite all data without saving
       if(dirty_bit) { 
-	
-	cache_memory[line][tag_column] = typed_address;	//set tag
-	copy_block_to_cache(line, index);               //copy the new block
-	cache_memory[line][count_column] = set_bit;     //set count LFU = 1
+
+	//set tag
+	cache_memory[line][tag_column] = typed_address;
+
+	//copy the new block
+	copy_block_to_cache(line, index);
+
+	//set count LFU = 1
+	cache_memory[line][count_column] = set_bit;   
+
+	//get value
+	bitset<bit_qnt> value(cache_memory[line][data_column+displacement]);
+
+	show_info(value, cache_memory_tag_line, displacement, current_block, true);	
       }
 
       //save the data in the main memory before change it
@@ -156,15 +160,11 @@ void Function :: read_content_main_memory() { //option 1
 	
       }
       
-      //get value
-      //bitset<bit_qnt> value(cache_memory[line][data_column+displacement]);
-      
-      //show value
-      
       update_info();
-      
     }
-    else { //there is at least one free row in the cache
+
+    //there is at least one free row in the cache
+    else {
 
       miss_read++;
 
@@ -173,10 +173,6 @@ void Function :: read_content_main_memory() { //option 1
       
       //set tag
       cache_memory[free_row_index][tag_column] = typed_address;
-
-      //set dirty-bit
-      //cannot change to 1 when read 
-      //cache_memory[free_row_index][dirty_bit_column] = set_bit;
 
       //copying values to cache memory
       copy_block_to_cache(free_row_index, index);
@@ -187,13 +183,7 @@ void Function :: read_content_main_memory() { //option 1
       //getting the value
       bitset<bit_qnt> value = main_memory_get_value(typed_address);
       
-      //show some info
-      cout << "\n\n\t Valor: " << value << "\n"
-	   << "\t Valor nao esta na cache\n"
-	   << "\t Nº do bloco: " << current_block << "\n\n"
-	   << "\t Pressione [-Enter-] para continuar\n\n";
-      
-      getchar();getchar();
+      show_info(value, cache_memory_tag_line, displacement, current_block, false);
       update_info();      
     }   
   }
