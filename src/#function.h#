@@ -44,7 +44,7 @@ class Function {
   //methods
   
   bool cache_memory_search_tag(bitset<bit_qnt>);
-  int cache_memory_check_valid_bit_0();
+  int  cache_memory_check_valid_bit_0();
   int  cache_memory_get_displacement(bitset<bit_qnt>);
   void cache_memory_increment_lfu(int);
   bitset<bit_qnt> main_memory_get_value(bitset<bit_qnt>);

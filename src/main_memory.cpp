@@ -133,9 +133,15 @@ void Function :: read_content_main_memory() { //option 1
   
     int free_row_index = cache_memory_check_valid_bit_0();
     
+    
     //if cache is full
+    
     if(free_row_index == -1) {
-      // replace some data in the cache
+      
+      //DOING...
+      // need to replace some data in the cache
+      
+      cout << "Cache is full \n\n";
       
     }
     else { //there is at least one free row in the cache

@@ -67,17 +67,17 @@ bool Function :: cache_memory_search_tag(bitset<bit_qnt> typed_address) {
 }
 
 
-bool Function :: cache_memory_check_valid_bit_0() {
+int Function :: cache_memory_check_valid_bit_0() {
 
   int found_valid_bit_0_index = -1;
+  bitset<bit_qnt> zero(0);
 
   for(int i = 0; i < cache_memory_row; i++) {
-    if(cache_memory[i][valid_bit_column] == 0) {
+    if(cache_memory[i][valid_bit_column] == zero) {
       found_valid_bit_0_index = i;
       break;
     }
   }
-
   return found_valid_bit_0_index;
 }
 
