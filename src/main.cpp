@@ -4,13 +4,11 @@
 using namespace std;
 
 int main() {
-
-  
   
   int choice = 0;
   bool exit = false;
   Function obj; 
-  
+
   while(!exit) {
     
     cin >> choice;
@@ -31,14 +29,11 @@ int main() {
     case 4:
       exit = true;
       break;
-      
+
     default:
       obj.menu();
     }
   }
-  
-
-  
   
   return 0;
 }

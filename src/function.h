@@ -44,9 +44,11 @@ class Function {
   //methods
   
   bool cache_memory_search_tag(bitset<bit_qnt>);
-  int cache_memory_check_valid_bit_0();
+  int  cache_memory_check_valid_bit_0();
+  bool cache_memory_check_dirty_bit_0(int);
   int  cache_memory_get_displacement(bitset<bit_qnt>);
   void cache_memory_increment_lfu(int);
+  int  cache_memory_get_maximum_counter();
   bitset<bit_qnt> main_memory_get_value(bitset<bit_qnt>);
   int  get_block_number(bitset<bit_qnt>);
   int  find_beginning_block(bitset<bit_qnt>, int);

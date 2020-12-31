@@ -82,6 +82,19 @@ int Function :: cache_memory_check_valid_bit_0() {
 }
 
 
+bool Function :: cache_memory_check_dirty_bit_0(int line) {
+
+  bool found_dirty_bit_0 = false;
+  bitset<bit_qnt> zero(0);
+
+  if(cache_memory[line][dirty_bit_column] == zero) {
+    found_dirty_bit_0 = true;
+  }
+
+  return found_dirty_bit_0;
+}
+
+
 void Function :: copy_block_to_cache(int free_row_index, int index) {
 
   //index + 3, because need to run through 4 cells
@@ -114,4 +127,21 @@ void Function :: cache_memory_increment_lfu(int index) {
   aux_int += 1; 
   bitset<bit_qnt> aux(aux_int);  //convert the new value to binary
   cache_memory[index][count_column] = aux; //save the value
+}
+
+
+int Function :: cache_memory_get_maximum_counter() {
+
+  int m = 0;
+  int line = -1;
+  
+  for(int i = 0; i < cache_memory.size(); i++) {
+    
+    if((int)(cache_memory[i][count_column].to_ulong()) > m) {
+      m = (int)cache_memory[i][count_column].to_ulong();
+      line = i;
+    }  
+  }
+  
+  return  line;
 }

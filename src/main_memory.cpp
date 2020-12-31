@@ -102,14 +102,14 @@ void Function :: read_content_main_memory() { //option 1
   bool tag_found = cache_memory_search_tag(typed_address);
   int current_block = get_block_number(typed_address);
   int index = find_beginning_block(typed_address, current_block);
+  int displacement = cache_memory_get_displacement(typed_address);
+  bitset<bit_qnt> set_bit(1);
 
   
   //first, search for it in the cache memory
   
   if(tag_found) { //the block is in the cache, read value...
-    
-    int displacement = cache_memory_get_displacement(typed_address);
-      
+          
     hit_read += 1; 
 
     //get the value in the cache memrory
@@ -129,19 +129,39 @@ void Function :: read_content_main_memory() { //option 1
       getchar();getchar();
       update_info();
   }
-  else { //copy all block to the cache memory
+  else { //copy all block in the cache memory
   
     int free_row_index = cache_memory_check_valid_bit_0();
     
-    
-    //if cache is full
-    
-    if(free_row_index == -1) {
+    if(free_row_index == -1) {  //if cache is full,  replace data using LFU policy
+
+      miss_read++;
+
+      //get maximum counter's line
+      int line = cache_memory_get_maximum_counter();
+
+      //check dirty bit
+      bool dirty_bit = cache_memory_check_dirty_bit_0(line);
+
+      //overrite all data without saving
+      if(dirty_bit) { 
+	
+	cache_memory[line][tag_column] = typed_address;	//set tag
+	copy_block_to_cache(line, index);               //copy the new block
+	cache_memory[line][count_column] = set_bit;     //set count LFU = 1
+      }
+
+      //save the data in the main memory before change it
+      else { 
+	
+      }
       
-      //DOING...
-      // need to replace some data in the cache
+      //get value
+      //bitset<bit_qnt> value(cache_memory[line][data_column+displacement]);
       
-      cout << "Cache is full \n\n";
+      //show value
+      
+      update_info();
       
     }
     else { //there is at least one free row in the cache
@@ -149,15 +169,14 @@ void Function :: read_content_main_memory() { //option 1
       miss_read++;
 
       //set valid bit
-      int set_bit_int = 1;
-      bitset<bit_qnt> set_bit(set_bit_int);
       cache_memory[free_row_index][valid_bit_column] = set_bit;
       
       //set tag
       cache_memory[free_row_index][tag_column] = typed_address;
 
       //set dirty-bit
-      cache_memory[free_row_index][dirty_bit_column] = set_bit;
+      //cannot change to 1 when read 
+      //cache_memory[free_row_index][dirty_bit_column] = set_bit;
 
       //copying values to cache memory
       copy_block_to_cache(free_row_index, index);
