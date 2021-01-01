@@ -55,11 +55,29 @@ void Function :: update_info() {
 	bitset<bit_qnt> aux(cache_memory[i][j]);
 	cout << "\t" << aux[0];
       }
-      else { // tag, data, counter (LFU)
+      else if(j == 1) { //tag
+
+	cout << "\t   ";
+
+	bitset<bit_qnt> aux(cache_memory[i][j]);
+	for(int i = 6; i > 1 ; i--) {
+	  cout << aux[i];
+	}
+      }
+      else if(j == 7) { //counter (LFU)
+	
+	cout << "\t   " ;
+
+	bitset<bit_qnt> aux(cache_memory[i][j]);
+	for(int i = 2; i >= 0; i--) {
+	  cout << aux[i];
+	}
+      }
+      else { // data
 	cout << "\t " << cache_memory[i][j];
       }      
     }
-    cout << "\033[1;32m  |\n\033[1;32m   |--------------------------------------------------------------------------------------------------------------|\033[0m\n";
+    cout << "\033[1;32m    |\n\033[1;32m   |--------------------------------------------------------------------------------------------------------------|\033[0m\n";
   }
   cout << "\n\n\n";
 

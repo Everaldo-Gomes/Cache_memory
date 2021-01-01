@@ -44,6 +44,7 @@ class Function {
   //methods
   
   bool cache_memory_search_tag(bitset<bit_qnt>);
+  int  cache_memory_get_tag_line(bitset<bit_qnt>);
   int  cache_memory_check_valid_bit_0();
   bool cache_memory_check_dirty_bit_0(int);
   int  get_displacement(bitset<bit_qnt>);
@@ -85,23 +86,18 @@ class Function {
 /* trash:
 
 
-   cout << "\n\n\t Valor: " << value << "\n"
-   << "\t Valor nao estava na cache\n"
-   << "\t Nº do bloco: " << current_block << "\n\n"
-   << "\t Pressione [-Enter-] para continuar\n\n";
+   
+   
+   //set value in the specific memory address
+  
+   for(int i = 0; i < main_memory.size(); i++) {
+   for(auto [data, address] : main_memory[i]) {
+   if(address == typed_address) {
+   main_memory[i].back().first = typed_data;
+   main_memory[i].back().second = address; //overwrite address 
+   }
+   }
+   }
 
-
-   //set dirty-bit
-   //cannot change to 1 when read 
-   //cache_memory[free_row_index][dirty_bit_column] = set_bit;
-      
-
-      //show some info
-      // cout << "\n\n\t Valor: " << value << "\n"
-      // 	   << "\t Valor não estava na cache\n"
-      // 	   << "\t Nº do quadro: " << cache_memory_tag_line << "\n"
-      // 	   << "\t Deslocamento: " << displacement << "\n"
-      // 	   << "\t Nº do bloco: " << current_block << "\n\n"
-      // 	   << "\t Pressione [-Enter-] para continuar.\n\n";
 
 */

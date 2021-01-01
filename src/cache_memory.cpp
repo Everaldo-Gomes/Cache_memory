@@ -24,11 +24,19 @@ void Function :: cache_memory_initializer() {
 	bitset<1> bb(0);
 	cout << "\t" << bb;
       }
-      else { // tag, data, counter (LFU)
+      else if(j == 1) { //tag
+	bitset<5> cc(0);
+	cout << "\t   " << cc;
+      }
+      else if(j == 7) { //counter (LFU)
+	bitset<3> dd(0);
+	cout << "\t   " << dd;
+      }
+      else { // data
 	cout << "\t " << aa;
       }      
     }
-    cout << "\033[1;32m  |\n\033[1;32m   |--------------------------------------------------------------------------------------------------------------|\033[0m\n";
+    cout << "\033[1;32m    |\n\033[1;32m   |--------------------------------------------------------------------------------------------------------------|\033[0m\n";
   }
   cout << "\n\n\n";
 }
@@ -58,6 +66,38 @@ bool Function :: cache_memory_search_tag(bitset<bit_qnt> typed_address) {
 
       if(count_bit_hit == 6) { //all bits matches, so the block is in the cache
 	found = true;
+	cache_memory_tag_line = i;
+	break;
+      }
+    }
+  }
+  return found;
+}
+
+
+int Function :: cache_memory_get_tag_line(bitset<bit_qnt> typed_address) {
+
+  int found = -1;
+  int count_bit_hit = 0;
+
+  //fetch a tag to compare
+  for(int i = 0; i < cache_memory_row; i++) {
+
+    if(cache_memory[i][valid_bit_column] == 1) { //exist some data in this row
+    
+      bitset<bit_qnt> fetched_tag(cache_memory[i][tag_column]);
+
+      //compare the fethed tag
+      for(int j = 0; j < 6; j++) {	
+	if(fetched_tag[j] != typed_address[j]) {
+	  count_bit_hit = 0;
+	  break;
+	}
+	else { count_bit_hit++; }
+      }
+
+      if(count_bit_hit == 6) { //all bits matches, so the block is in the cache
+	found = i;
 	cache_memory_tag_line = i;
 	break;
       }
