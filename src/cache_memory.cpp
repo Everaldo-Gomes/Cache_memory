@@ -170,8 +170,20 @@ void Function :: cache_memory_increment_lfu(int index) {
 }
 
 
-int Function :: cache_memory_get_maximum_counter() {
+int Function :: cache_memory_get_minimum_counter() {
 
+  int m = 1E7;
+  int line = -1;
+  
+  for(unsigned int i = 0; i < cache_memory.size(); i++) {
+    
+    if((int)(cache_memory[i][count_column].to_ulong()) < m) {
+      m = (int)cache_memory[i][count_column].to_ulong();
+      line = i;
+    }  
+  }
+  
+  /*
   int m = 0;
   int line = -1;
   
@@ -182,6 +194,6 @@ int Function :: cache_memory_get_maximum_counter() {
       line = i;
     }  
   }
-  
+  */
   return  line;
 }

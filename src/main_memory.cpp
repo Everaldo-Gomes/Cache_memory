@@ -58,7 +58,7 @@ int Function :: get_block_number(bitset<bit_qnt> address) {
 
 int Function :: find_beginning_block(bitset<bit_qnt>, int current_block) {
 
-  int i = 0;
+  unsigned int i = 0;
   bool stop = false;
   
   for(; i < main_memory.size(); i++) {
@@ -148,8 +148,8 @@ void Function :: read_content_main_memory() { //option 1
     if(free_row_index == -1) {  //if cache is full,  replace data using LFU policy
 
 
-      //get maximum counter's line
-      int line = cache_memory_get_maximum_counter();
+      //get mininum counter's line
+      int line = cache_memory_get_minimum_counter();
       
       //get value
       bitset<bit_qnt> value(cache_memory[line][data_column+displacement]);
@@ -157,7 +157,7 @@ void Function :: read_content_main_memory() { //option 1
       //check dirty bit
       bool dirty_bit = cache_memory_check_dirty_bit_0(line);
 
-      //overrite all data without saving ( dirty bit = 0 )
+      //overwrite all data without saving ( dirty bit = 0 )
       if(dirty_bit) { 
 
 	//set tag
@@ -173,28 +173,27 @@ void Function :: read_content_main_memory() { //option 1
       }
 
       
-      /*
-	+++++++++++  IMPORTANT ++++++++++
-
-	the else below needs to be tested when finish the option 2
-      */
+      /*+++++++++++  IMPORTANT ++++++++++
+	   doing some changes here...*/
       
-      //save the data in the main memory before change it ( dirty bit = 1)
+      //save the data in the main memory before changing the current data (dirty bit = 1)
       else {
+
+	//get the block number
+	cout << current_block << endl;
 	
-	//get some random place in the main memory 0 - 127
-	bitset<bit_qnt> place(rand() % 127);
-
-	//save the value
-	main_memory_set_value(place, value);
-	cout << place << " <- " << endl;
-
-	//do the same thing as the if above
-      }
-
-      //Need to be finished --^
-      //+++++++++++++++++++++++++++++++++++++++++++++++
-      
+	//get displacement
+	//get value
+	//copy all data to this block in main memory,
+	//copy all the new block to cache memory
+	//set dirty bit 0
+	//counter lfu = 1
+	//show where the info are in the main memory
+	//show where the info are in the cache memory
+	
+        
+	getchar(); getchar();
+      }      
     }
 
     //there is at least one free row in the cache
@@ -228,7 +227,7 @@ void Function :: write_content_main_memory() { //option 2
 
   bitset<bit_qnt> typed_address, typed_data, set_bit(1);
   
-  cout << "\n\t Enter the address ";
+  cout << "\n\t Enter the address: ";
   cin >> typed_address;
 
   cout << "\t Enter the value: ";
@@ -244,12 +243,12 @@ void Function :: write_content_main_memory() { //option 2
   
   //there is not data in the cache, and valid bit is 0
   if(tag_line == -1 && free_row_index >= 0) {
-
+    
     miss_write++;
     
     //set valid bit
     cache_memory[free_row_index][valid_bit_column] = set_bit;
-    
+
     //set tag
     cache_memory[free_row_index][tag_column] = typed_address;
 
@@ -258,12 +257,12 @@ void Function :: write_content_main_memory() { //option 2
 
     //set value
     cache_memory[free_row_index][data_column+displacement] = typed_data;
-
+    
     show_info(typed_data, tag_line+1, displacement, current_block, false);
   }
 
   //found the tag but not the data
-  if(tag_line >= 0 && free_row_index >= 0) {
+  else if(tag_line >= 0 && free_row_index >= 0) {
 
     hit_write++;
     
@@ -271,11 +270,16 @@ void Function :: write_content_main_memory() { //option 2
     if(cache_memory[tag_line][data_column+displacement] != typed_data) {
       cache_memory[tag_line][data_column+displacement] = typed_data;
     }
+
+    //set dirty-bit
+    cache_memory[tag_line][dirty_bit_column] = set_bit;
    
     show_info(typed_data, tag_line, displacement, current_block, true);
   }
-  
+
   //increment count LFU
+  if(tag_line < 0) { tag_line += 1; } //if it comes from the first if, the value is -1, and need to be at leat 0
   cache_memory_increment_lfu(tag_line);
+  
   update_info();      
 }

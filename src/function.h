@@ -49,7 +49,7 @@ class Function {
   bool cache_memory_check_dirty_bit_0(int);
   int  get_displacement(bitset<bit_qnt>);
   void cache_memory_increment_lfu(int);
-  int  cache_memory_get_maximum_counter();
+  int  cache_memory_get_minimum_counter();
   bitset<bit_qnt> main_memory_get_value(bitset<bit_qnt>);
   void main_memory_set_value(bitset<bit_qnt>, bitset<bit_qnt>);
   int  get_block_number(bitset<bit_qnt>);

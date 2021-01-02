@@ -27,7 +27,7 @@ void Function :: info_students() {
 void Function :: menu() {
   
   cout << "\t 1- Ler conteúdo de um endereco de memoria\n"
-       << "\t 2- Escreve conteúdo em um endereco de memoria\n"
+       << "\t 2- Escrever conteúdo em um endereco de memoria\n"
        << "\t 3- Estatisticas de acertos e erros\n"
        << "\t 4- Encerrar programa\n\n\n"
 
