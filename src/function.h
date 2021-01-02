@@ -10,7 +10,7 @@ using namespace std;
 
 class Function {
 
- private:
+private:
   
   //instances
   
@@ -59,7 +59,7 @@ class Function {
   void update_info();
 
   
- public:
+public:
   
   //instances
   
@@ -88,47 +88,46 @@ class Function {
 
    
    
-   //set value in the specific memory address
+//set value in the specific memory address
   
-   for(int i = 0; i < main_memory.size(); i++) {
-   for(auto [data, address] : main_memory[i]) {
-   if(address == typed_address) {
-   main_memory[i].back().first = typed_data;
-   main_memory[i].back().second = address; //overwrite address 
-   }
-   }
-   }
+for(int i = 0; i < main_memory.size(); i++) {
+for(auto [data, address] : main_memory[i]) {
+if(address == typed_address) {
+main_memory[i].back().first = typed_data;
+main_memory[i].back().second = address; //overwrite address 
+}
+}
+}
 
 
-      //check if the displacement is avaiable, just put the data
-    //    bitset<bit_qnt> zero(0);
+check if the displacement is avaiable, just put the data
+bitset<bit_qnt> zero(0);
  
-    //if(cache_memory[cache_memory_tag_line][data_column+displacement] == zero) {
+f(cache_memory[cache_memory_tag_line][data_column+displacement] == zero) {
 
-   //}
-    /*
-    //there is some data in the same displacement, need to write-back
-    else {
+}
 
-      // write without saving in the main memory
-      if(cache_memory[cache_memory_tag_line][dirty_bit_column] == zero) {
-	cache_memory[cache_memory_tag_line][data_column+displacement] = typed_data;
+there is some data in the same displacement, need to write-back
+else {
+
+write without saving in the main memory
+if(cache_memory[cache_memory_tag_line][dirty_bit_column] == zero) {
+cache_memory[cache_memory_tag_line][data_column+displacement] = typed_data;
 	      
-	show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
-      }
+show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
+}
 
-      //save all lines in the main memory [write back]
-      else {
+//save all lines in the main memory [write back]
+else {
 	
-	//get block number/beginning
-	int beginning = find_beginning_block(typed_address);
 	
-	//coopy all data to there
 	
-	//save new data in cache
-	//set lfu 1
-      }
+//coopy all data to there
+	
+//save new data in cache
+//set lfu 1
+}
      
-    } 
+} 
 
 */

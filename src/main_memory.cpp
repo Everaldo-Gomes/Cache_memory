@@ -155,10 +155,10 @@ void Function :: read_content_main_memory() { //option 1
       bitset<bit_qnt> value(cache_memory[line][data_column+displacement]);
       
       //check dirty bit
-      bool dirty_bit = cache_memory_check_dirty_bit_0(line);
+      bool dirty_bit_0 = cache_memory_check_dirty_bit_0(line);
 
       //overwrite all data without saving ( dirty bit = 0 ), because the value is already in the main memory
-      if(dirty_bit) { 
+      if(dirty_bit_0) { 
 
 	//set tag
 	cache_memory[line][tag_column] = typed_address;
@@ -178,39 +178,34 @@ void Function :: read_content_main_memory() { //option 1
       
       //save the data in the main memory before changing the current data (dirty bit = 1)
       else {
-	
-	//get the block number
-	cout << current_block << endl;
-	
-	//get displacement
-	cout << displacement << endl;
-	
-	//get value
-	cout << value << endl;
 
-	//copy all data to this block in main memory,
-	cout <<  cache_memory[line][data_column]   << "\n"
-	     <<  cache_memory[line][data_column+1] << "\n"
-	     <<  cache_memory[line][data_column+2] << "\n"
-	     <<  cache_memory[line][data_column+3] << "\n";
-	  
-	
-	//copy all the new block to cache memory
-	//set dirty bit 0
-	//counter lfu = 1
-	//show where the info are in the main memory
-	//show where the info are in the cache memory
 
+	//get the block which the data in the cache belongs
+	bitset<bit_qnt> aux = cache_memory[line][tag_column]; //get the address from the line that will be removed
+	int block_number = get_block_number(aux); 
+	
+	//get block number/beginning
+	int beginning_block = find_beginning_block(typed_address, block_number);
+
+	//copy all data in the cache memory to main memory,
+	for(unsigned int i = beginning_block, j = 0; i < beginning_block+4; i++, j++) {
+	  main_memory[i].back().first = cache_memory[line][data_column+j];
+	}
+        
 	//set tag
 	cache_memory[line][tag_column] = typed_address;
-
+	
+	//set dirty bit 0
+	bitset<bit_qnt> zero(0);
+	cache_memory[line][dirty_bit_column] = zero;
+	
 	//copy the new block
 	copy_block_to_cache(line, index);
 
 	//set count LFU = 1
 	cache_memory[line][count_column] = set_bit;   
-        
-	getchar(); getchar();
+
+	show_info(value, cache_memory_tag_line, displacement, current_block, false);
       }      
     }
 
