@@ -56,7 +56,8 @@ bool Function :: cache_memory_search_tag(bitset<bit_qnt> typed_address) {
       bitset<bit_qnt> fetched_tag(cache_memory[i][tag_column]);
 
       //compare the fethed tag
-      for(int j = 0; j < 6; j++) {	
+      for(int j = 6; j > 1; j--) {
+	//for(int j = 0; j < 6; j++) {	
 	if(fetched_tag[j] != typed_address[j]) {
 	  count_bit_hit = 0;
 	  break;
@@ -64,7 +65,7 @@ bool Function :: cache_memory_search_tag(bitset<bit_qnt> typed_address) {
 	else { count_bit_hit++; }
       }
 
-      if(count_bit_hit == 6) { //all bits matches, so the block is in the cache
+      if(count_bit_hit == 5) { //all bits matches, so the block is in the cache
 	found = true;
 	cache_memory_tag_line = i;
 	break;
@@ -88,7 +89,7 @@ int Function :: cache_memory_get_tag_line(bitset<bit_qnt> typed_address) {
       bitset<bit_qnt> fetched_tag(cache_memory[i][tag_column]);
 
       //compare the fethed tag
-      for(int j = 0; j < 6; j++) {	
+      for(int j = 6; j > 1; j--) {
 	if(fetched_tag[j] != typed_address[j]) {
 	  count_bit_hit = 0;
 	  break;
@@ -96,13 +97,13 @@ int Function :: cache_memory_get_tag_line(bitset<bit_qnt> typed_address) {
 	else { count_bit_hit++; }
       }
 
-      if(count_bit_hit == 6) { //all bits matches, so the block is in the cache
+      if(count_bit_hit == 5) { //all bits matches, so the block is in the cache
 	found = i;
 	cache_memory_tag_line = i;
 	break;
       }
     }
-  }
+  } 
   return found;
 }
 

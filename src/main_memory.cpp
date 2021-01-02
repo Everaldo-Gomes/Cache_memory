@@ -157,7 +157,7 @@ void Function :: read_content_main_memory() { //option 1
       //check dirty bit
       bool dirty_bit = cache_memory_check_dirty_bit_0(line);
 
-      //overwrite all data without saving ( dirty bit = 0 )
+      //overwrite all data without saving ( dirty bit = 0 ), because the value is already in the main memory
       if(dirty_bit) { 
 
 	//set tag
@@ -178,19 +178,37 @@ void Function :: read_content_main_memory() { //option 1
       
       //save the data in the main memory before changing the current data (dirty bit = 1)
       else {
-
+	
 	//get the block number
 	cout << current_block << endl;
 	
 	//get displacement
+	cout << displacement << endl;
+	
 	//get value
+	cout << value << endl;
+
 	//copy all data to this block in main memory,
+	cout <<  cache_memory[line][data_column]   << "\n"
+	     <<  cache_memory[line][data_column+1] << "\n"
+	     <<  cache_memory[line][data_column+2] << "\n"
+	     <<  cache_memory[line][data_column+3] << "\n";
+	  
+	
 	//copy all the new block to cache memory
 	//set dirty bit 0
 	//counter lfu = 1
 	//show where the info are in the main memory
 	//show where the info are in the cache memory
-	
+
+	//set tag
+	cache_memory[line][tag_column] = typed_address;
+
+	//copy the new block
+	copy_block_to_cache(line, index);
+
+	//set count LFU = 1
+	cache_memory[line][count_column] = set_bit;   
         
 	getchar(); getchar();
       }      
@@ -257,15 +275,15 @@ void Function :: write_content_main_memory() { //option 2
 
     //set value
     cache_memory[free_row_index][data_column+displacement] = typed_data;
-    
+
     show_info(typed_data, tag_line+1, displacement, current_block, false);
   }
 
   //found the tag but not the data
-  else if(tag_line >= 0 && free_row_index >= 0) {
+  else if(tag_line >= 0) { //&& free_row_index >= 0
 
     hit_write++;
-    
+
     //seaarch for the data using displacement
     if(cache_memory[tag_line][data_column+displacement] != typed_data) {
       cache_memory[tag_line][data_column+displacement] = typed_data;
