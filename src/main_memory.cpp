@@ -248,20 +248,19 @@ void Function :: write_content_main_memory() { //option 2
   cout << "\n\t Enter the address: ";
   cin >> typed_address;
 
-  cout << "\t Enter the value: ";
+  cout << "\t Enter the value:   ";
   cin >> typed_data;
 
+  
   bool tag_found = cache_memory_search_tag(typed_address);
   int free_row_index = cache_memory_check_valid_bit_0();
   int displacement = get_displacement(typed_address);
-  int tag_line = cache_memory_get_tag_line(typed_address);
   int current_block = get_block_number(typed_address);
-  int displacent = get_displacement(typed_address);
 
-  
-  //there is not data in the cache, and valid bit is 0
-  if(tag_line == -1 && free_row_index >= 0) {
     
+  //there is not data in the cache, and valid bit is 0
+  if((cache_memory_tag_line == -1 && free_row_index >= 0)) {
+
     miss_write++;
     
     //set valid bit
@@ -276,28 +275,44 @@ void Function :: write_content_main_memory() { //option 2
     //set value
     cache_memory[free_row_index][data_column+displacement] = typed_data;
 
-    show_info(typed_data, tag_line+1, displacement, current_block, false);
+    show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
   }
 
-  //found the tag but not the data
-  else if(tag_line >= 0) { //&& free_row_index >= 0
+  //put new data in another place
+  else if(!tag_found) {
+    
+    cache_memory_find_tag_0(); //search for an available tag
 
-    hit_write++;
+    miss_write++;
 
-    //seaarch for the data using displacement
-    if(cache_memory[tag_line][data_column+displacement] != typed_data) {
-      cache_memory[tag_line][data_column+displacement] = typed_data;
-    }
+    //set valid bit
+    cache_memory[free_row_index][valid_bit_column] = set_bit;
+
+    //set tag
+    cache_memory[free_row_index][tag_column] = typed_address;
 
     //set dirty-bit
-    cache_memory[tag_line][dirty_bit_column] = set_bit;
-   
-    show_info(typed_data, tag_line, displacement, current_block, true);
+    cache_memory[free_row_index][dirty_bit_column] = set_bit;
+    
+    //set value
+    cache_memory[free_row_index][data_column+displacement] = typed_data;
+
+    show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
   }
 
-  //increment count LFU
-  if(tag_line < 0) { tag_line += 1; } //if it comes from the first if, the value is -1, and need to be at leat 0
-  cache_memory_increment_lfu(tag_line);
+  //if foundtag and displacement is the same or different
+  else if(tag_found) {
+
+    hit_write++;
+     
+    cache_memory[cache_memory_tag_line][data_column+displacement] = typed_data;
+    
+    show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
+  }
   
+  //increment count LFU
+  if(cache_memory_tag_line < 0) { cache_memory_tag_line += 1; } //if it comes from the first if, the value is -1, and need to be at leat 0
+  cache_memory_increment_lfu(cache_memory_tag_line);
+
   update_info();      
 }

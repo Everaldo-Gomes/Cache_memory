@@ -60,7 +60,7 @@ void Function :: update_info() {
 	cout << "\t   ";
 
 	bitset<bit_qnt> aux(cache_memory[i][j]);
-	for(int i = 6; i > 1 ; i--) {
+	for(int i = 6; i > 1; i--) {
 	  cout << aux[i];
 	}
       }
