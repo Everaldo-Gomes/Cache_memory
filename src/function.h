@@ -75,7 +75,6 @@ public:
   void read_content_main_memory();
   void write_content_main_memory();
   void statistic();
-  
 };
 
 
