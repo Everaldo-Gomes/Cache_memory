@@ -23,16 +23,16 @@ private:
   const int data_column = 3; // 3 - 6
   const int count_column = 7;
   
-  int hit_read = 0;
-  int miss_read = 0;
+  double hit_read = 0;
+  double miss_read = 0;
   double average_read = 0.0;
 
-  int hit_write = 0;
-  int miss_write = 0;
+  double hit_write = 0;
+  double miss_write = 0;
   double average_write = 0.0;
   
   int hit_miss_read = 0;
-  int hit_miiss_write = 0;
+  int hit_miss_write = 0;
   double average_hit_miss_write = 0.0;
 
   int cache_memory_tag_line = -1;
@@ -74,6 +74,7 @@ public:
   void cache_memory_initializer();
   void read_content_main_memory();
   void write_content_main_memory();
+  void statistic();
   
 };
 

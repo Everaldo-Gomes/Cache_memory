@@ -131,12 +131,56 @@ void Function :: show_info(bitset<bit_qnt> value, int tag_line, int d, int block
 
   
   //show some info
-      cout << "\n\n\t Valor: " << value << "\n"
-	   << "\t" << result
-	   << "\t Nº do quadro: " << cache_memory_tag_line << " [ " << tag_line << " ]\n"
-	   << "\t Deslocamento: " << displacement << " [ " << d << " ]\n"
-	   << "\t Nº do bloco:  " << current_block << " [ " << block << " ]\n\n"
-	   << "\t Pressione [-Enter-] para continuar.\n\n";
+  cout << "\n\n\t Valor: " << value << "\n"
+       << "\t" << result
+       << "\t Nº do quadro: " << cache_memory_tag_line << " [ " << tag_line << " ]\n"
+       << "\t Deslocamento: " << displacement << " [ " << d << " ]\n"
+       << "\t Nº do bloco:  " << current_block << " [ " << block << " ]\n\n"
+       << "\t Pressione [-Enter-] para continuar.\n\n";
 
-      getchar(); getchar();
+  getchar(); getchar();
+}
+
+
+void Function :: statistic() {
+
+  double hit_read_ratio = hit_read / (hit_read + miss_read);
+  double miss_read_ratio = miss_read / (hit_read + miss_read);
+  average_read = hit_read_ratio / miss_read_ratio * 100;
+
+  double hit_write_ratio = hit_write / (hit_write + miss_write);
+  double miss_write_ratio = miss_write / (hit_write + miss_write);
+  average_write = hit_write_ratio / miss_write_ratio * 100;
+
+  hit_miss_read = hit_read + hit_write;
+  hit_miss_write = miss_read + miss_write;
+  average_hit_miss_write = ((average_write + average_read) / 2) / 100;
+  
+  //read
+  cout << "\n\tRead: \n"
+       << "\t\tHit: " << hit_read << "\n"
+       << "\t\tMiss: " << miss_read << "\n"
+       << fixed << setprecision(2)
+       << "\t\tAverage: " << average_read << "%\n\n"
+  
+  //write
+       << "\tWrite: \n"
+       << fixed << setprecision(0)
+       << "\t\tHit: " << hit_write << "\n"
+       << "\t\tMiss: " << miss_write << "\n"
+       << fixed << setprecision(2)
+       << "\t\tAverage: " << average_write << "%\n\n"
+
+  //general
+       << "\tGeneral: \n"
+       << fixed << setprecision(0)
+       << "\t\tHit: " << hit_miss_read << "\n"
+       << "\t\tMiss: " <<  hit_miss_write << "\n"
+       << fixed << setprecision(2)
+       << "\t\tAverage: " << average_hit_miss_write << "%\n\n";
+
+  cout << "\t Pressione [-Enter-] para continuar.\n\n";
+
+  getchar();getchar();
+  update_info();
 }

@@ -23,7 +23,7 @@ int main() {
       break;
 	
     case 3:
-      //obj.statistic();
+      obj.statistic();
       break;
 	
     case 4:

@@ -112,7 +112,7 @@ void Function :: main_memory_set_value(bitset<bit_qnt> new_address, bitset<bit_q
 
 void Function :: read_content_main_memory() { //option 1
 
-  cout << "\t Enter the address ";
+  cout << "\t Enter the address: ";
   
   bitset<bit_qnt> typed_address;
   cin >> typed_address;
@@ -128,7 +128,7 @@ void Function :: read_content_main_memory() { //option 1
   
   if(tag_found) { //the block is in the cache, read value...
           
-    hit_read += 1; 
+    hit_read++; 
 
     //get the value in the cache memrory
     bitset<bit_qnt> value(cache_memory[cache_memory_tag_line][data_column+displacement]);
@@ -142,11 +142,9 @@ void Function :: read_content_main_memory() { //option 1
   //copy all block in the cache memory
   else { 
 
-    miss_read++;
     int free_row_index = cache_memory_check_valid_bit_0();
     
     if(free_row_index == -1) {  //if cache is full,  replace data using LFU policy
-
 
       //get mininum counter's line
       int line = cache_memory_get_minimum_counter();
@@ -169,16 +167,11 @@ void Function :: read_content_main_memory() { //option 1
 	//set count LFU = 1
 	cache_memory[line][count_column] = set_bit;   
 
-	show_info(value, cache_memory_tag_line, displacement, current_block, true);	
+	show_info(value, cache_memory_tag_line+1, displacement, current_block, true);	
       }
 
-      
-      /*+++++++++++  IMPORTANT ++++++++++
-	   doing some changes here...*/
-      
       //save the data in the main memory before changing the current data (dirty bit = 1)
       else {
-
 
 	//get the block which the data in the cache belongs
 	bitset<bit_qnt> aux = cache_memory[line][tag_column]; //get the address from the line that will be removed
@@ -188,7 +181,7 @@ void Function :: read_content_main_memory() { //option 1
 	int beginning_block = find_beginning_block(typed_address, block_number);
 
 	//copy all data in the cache memory to main memory,
-	for(unsigned int i = beginning_block, j = 0; i < beginning_block+4; i++, j++) {
+	for(int i = beginning_block, j = 0; i < beginning_block+4; i++, j++) {
 	  main_memory[i].back().first = cache_memory[line][data_column+j];
 	}
         
@@ -205,14 +198,13 @@ void Function :: read_content_main_memory() { //option 1
 	//set count LFU = 1
 	cache_memory[line][count_column] = set_bit;   
 
-	show_info(value, cache_memory_tag_line, displacement, current_block, false);
-      }      
+	show_info(value, cache_memory_tag_line+1, displacement, current_block, false);
+      }
+      
     }
 
     //there is at least one free row in the cache
     else {
-
-      miss_read++;
 
       //set valid bit
       cache_memory[free_row_index][valid_bit_column] = set_bit;
@@ -229,8 +221,9 @@ void Function :: read_content_main_memory() { //option 1
       //getting the value
       bitset<bit_qnt> value = main_memory_get_value(typed_address);
       
-      show_info(value, cache_memory_tag_line, displacement, current_block, false);
-    }   
+      show_info(value, cache_memory_tag_line+1, displacement, current_block, false);
+    }
+    miss_read++;
   }
   update_info();
 }
@@ -270,6 +263,9 @@ void Function :: write_content_main_memory() { //option 2
     //set value
     cache_memory[free_row_index][data_column+displacement] = typed_data;
 
+    //increment count LFU
+    cache_memory_increment_lfu(free_row_index);
+    
     show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
   }
 
@@ -292,6 +288,9 @@ void Function :: write_content_main_memory() { //option 2
     //set value
     cache_memory[free_row_index][data_column+displacement] = typed_data;
 
+    //increment count LFU
+    cache_memory_increment_lfu(free_row_index);
+
     show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
   }
 
@@ -301,13 +300,12 @@ void Function :: write_content_main_memory() { //option 2
     hit_write++;
      
     cache_memory[cache_memory_tag_line][data_column+displacement] = typed_data;
+
+    //increment count LFU
+    cache_memory_increment_lfu(cache_memory_tag_line);
     
     show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
   }
   
-  //increment count LFU
-  if(cache_memory_tag_line < 0) { cache_memory_tag_line += 1; } //if it comes from the first if, the value is -1, and need to be at leat 0
-  cache_memory_increment_lfu(cache_memory_tag_line);
-
   update_info();      
 }
