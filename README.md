@@ -4,7 +4,7 @@
 
 #  About
 
-info about the project...
+Cache memory using write back and LFU policy
 
 <br>
 
