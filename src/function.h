@@ -4,17 +4,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
-#define bit_qnt 7
 #define bit_identify_block 5
 
 class Function {
 
-private:
-  
-  //instances
-  
-  const int main_memory_cell = 128;
+
   const int cache_memory_row = 8;
   const int cache_memory_column = 8;
   const int valid_bit_column = 0;
@@ -37,7 +31,7 @@ private:
 
   int cache_memory_tag_line = -1;
   
-  vector<vector<pair<bitset<bit_qnt>, bitset<bit_qnt>>>> main_memory;
+
   vector<vector<bitset<bit_qnt>>> cache_memory;
   
   

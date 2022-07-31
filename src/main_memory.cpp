@@ -3,47 +3,10 @@
 #include "function.h"
 using namespace std;
 
-void Function :: main_memory_initializer() {
-
-  cout <<"\t\t\t Main Memory\n\n"
-       <<"\t\t   Value \t Address\n\n";
-
-  main_memory.resize(main_memory_cell);
-  int block_counter = 0, block_qnt = 0;
-  
-  for(int i = 0; i < main_memory_cell; i++) {
-    
-    if(block_counter == 2) {   
-      cout << "\033[1;36mBlock " << block_qnt << "\033[0m\b\b\b\b\b";
-    }
-
-    int aux_rand = rand() % 10000000;      // random values int
-    int aux_address = i;                   // memory address int
-    bitset<bit_qnt> binary_value(aux_rand);      // randon values binary
-    bitset<bit_qnt> binary_address(aux_address); // memory address binary
-    
-    main_memory[i].push_back({binary_value, binary_address}); // save values
-
-    cout << "\t\t\033[1;32m|---------|\n" << "\t\t|\033[0m " ;
-    
-    cout << binary_value << "\033[1;32m |\033[0m\t" << binary_address; // show the values
-    
-    if(block_counter == 3) {
-      cout << "\n\t\t\033[1;32m|---------|\033[0m\n\n";
-      block_counter = 0;
-      block_qnt++;
-    }
-    else {
-      cout << "\n";
-      block_counter++;
-    }
-  } 
-}
-
-
 
 int Function :: get_block_number(bitset<bit_qnt> address) {
-  
+
+	
   bitset<bit_identify_block> ab;
       
   for(int i = bit_qnt; i >= 2; i--) {
@@ -92,22 +55,6 @@ bitset<bit_qnt> Function :: main_memory_get_value(bitset<bit_qnt> typed_address)
   return value;
 }
 
-
-void Function :: main_memory_set_value(bitset<bit_qnt> new_address, bitset<bit_qnt> new_value) {
-  
-  bool stop = false;
-  
-  for(unsigned int i = 0; i < main_memory.size(); i++) {
-    for(auto [data, address] : main_memory[i]) {
-      if(address == new_address) {
-	data = new_value;
-	stop = true;
-	break;
-      }
-    }
-    if(stop) { break; }
-  }
-}
 
 
 void Function :: read_content_main_memory() { //option 1
