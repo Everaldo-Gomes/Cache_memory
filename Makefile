@@ -2,7 +2,7 @@ path_bin =  ./bin
 compiler_flags = g++ -g -Wall -std=c++17
 
 
-all: main ram run #cache run
+all: main ram cache run
 
 
 main: ./src/main.cpp
@@ -18,7 +18,7 @@ cache: ./src/cache/cache.cpp
 run:
 	gnome-terminal -- ${path_bin}/main.exe
 	gnome-terminal -- ${path_bin}/ram.exe
-	#gnome-terminal -- ${path_bin}/cache.exe
+	gnome-terminal -- ${path_bin}/cache.exe
 
 clean:
 	rm -rf ${path_bin}/*.exe

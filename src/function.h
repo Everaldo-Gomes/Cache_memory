@@ -9,8 +9,7 @@ using namespace std;
 class Function {
 
 
-  const int cache_memory_row = 8;
-  const int cache_memory_column = 8;
+  
   const int valid_bit_column = 0;
   const int tag_column = 1;
   const int dirty_bit_column = 2;
@@ -31,8 +30,6 @@ class Function {
 
   int cache_memory_tag_line = -1;
   
-
-  vector<vector<bitset<bit_qnt>>> cache_memory;
   
   
   //methods

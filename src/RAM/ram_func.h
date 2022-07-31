@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <bits/stdc++.h>
 #include <bitset>
 
@@ -22,6 +21,7 @@ public:
 	void info_header();
 	void update_info();
 	void init();
+	void read_content_main_memory();
 	void set_value(std::bitset<bit_qnt> new_address, std::bitset<bit_qnt> new_value);
 };
 
