@@ -40,7 +40,7 @@ void Cache::init()
 			//tag
 			else if (j == 1)
 			{ 
-				std::bitset<5> cc(0);
+?				std::bitset<5> cc(0);
 				std::cout << "\t   " << cc;	
 			}
 			

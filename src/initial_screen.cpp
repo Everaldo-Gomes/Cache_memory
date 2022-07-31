@@ -3,21 +3,6 @@
 #include "function.h"
 using namespace std;
 
-// constructor
-Function :: Function() {
-  
-  clean_screen();
-  info_students();
-  cache_memory_initializer();
-  main_memory_initializer();
-  menu();  
-}
-
-void Function :: clean_screen() {
-  system("clear");
-}
-
-
 /* update info cache
 
   
