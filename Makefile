@@ -2,7 +2,7 @@ path_bin =  ./bin
 compiler_flags = g++ -g -Wall -std=c++17
 
 
-all: main ram cache run
+all: main ram cache
 
 
 main: ./src/main.cpp

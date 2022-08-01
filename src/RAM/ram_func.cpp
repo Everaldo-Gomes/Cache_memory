@@ -3,22 +3,37 @@
 RAM::RAM()
 {
 	info_header();
+	init();
+
+	if ((shmid = shmget(key, SHMSZ, 0666)) < 0)
+	{
+		std::cout << "Error creating the segment shmget" << std::endl;
+		return;
+	}
+
+	if ((typed_info = (std::bitset<bit_qnt>*)shmat(shmid, NULL, 0)) == (std::bitset<bit_qnt>*) -1 ||
+		(chosen_option = (int*)shmat(shmid, NULL, 0)) == (int*) -1 ||
+		(cache_tag_found = (bool*)shmat(shmid, NULL, 0)) == (bool*) -1)
+	{
+		std::cout << "Error attaching the segment shmat" << std::endl;
+		return;
+	}
 }
 
 void RAM::info_header()
 {
-	std::cout <<"\t\t\t RAM Memory\n\n\n\n"
+	std::cout <<"\t\t\t RAM \n\n\n\n"
 			  <<"\t\t   Value \tAddress\n\n";
 }
 
 void RAM::init() {
 
-	ram_memory.resize(ram_memory_cell);
+	ram.resize(ram_cell);
 	
 	int block_counter = 0,
 		block_qnt = 0;
   
-	for (int i = 0; i < ram_memory_cell; i++)
+	for (int i = 0; i < ram_cell; i++)
 	{
 		if (block_counter == 2)
 		{   
@@ -30,7 +45,7 @@ void RAM::init() {
 		std::bitset<bit_qnt> binary_address(i);              
 
 		// save values and addresses
-		ram_memory[i].push_back({binary_value, binary_address});
+		ram[i].push_back({binary_value, binary_address});
 
 		// show values and addresses
 		std::cout << "\t\t\033[1;32m|---------|\n" << "\t\t|\033[0m ";
@@ -59,7 +74,7 @@ void RAM::update_info() {
 	int block_counter = 0,
 		block_qnt = 0;
   
-	for (int i = 0; i < ram_memory_cell; i++)
+	for (int i = 0; i < ram_cell; i++)
 	{    
 		if (block_counter == 2)
 		{   
@@ -68,7 +83,7 @@ void RAM::update_info() {
     
 		std::cout << "\t\t\033[1;32m|---------|\n" << "\t\t|\033[0m ";
 
-		for (auto [data, address] : ram_memory[i])
+		for (auto [data, address] : ram[i])
 		{
 			std::cout << data << "\033[1;32m |\033[0m\t" << address;
 		}
@@ -92,9 +107,9 @@ void RAM::set_value(std::bitset<bit_qnt> new_address, std::bitset<bit_qnt> new_v
 {
 	bool stop = false;
   
-	for(unsigned int i = 0; i < ram_memory.size(); i++)
+	for(unsigned int i = 0; i < ram.size(); i++)
 	{
-		for(auto [data, address] : ram_memory[i])
+		for(auto [data, address] : ram[i])
 		{
 			if(address == new_address)
 			{
@@ -113,10 +128,31 @@ void RAM::set_value(std::bitset<bit_qnt> new_address, std::bitset<bit_qnt> new_v
 
 
 
-void RAM::read_content_main_memory()
+void RAM::read_content_ram()
 {
+	/*	
+	short int shmid;
+	key_t key = 0001;
+
+
+	if ((shmid = shmget(key, SHMSZ, 0666)) < 0)
+	{
+		std::cout << "Error creating the segment shmget" << std::endl;
+		return;
+	}
+
+	if ()
+	{
+		std::cout << "Error attaching the segment shmat" << std::endl;
+		return;
+	}
+*/
+	//std::cout << *cache_tag_found << "\n\n";
+	
+	//bool tag_found = cache_memory_search_tag(typed_address);
+
+	
 	/*
-	bool tag_found = cache_memory_search_tag(typed_address);     
 	int current_block = get_block_number(typed_address);
 	int index = find_beginning_block(typed_address, current_block);
 	int displacement = get_displacement(typed_address);
@@ -227,3 +263,149 @@ void RAM::read_content_main_memory()
 	update_info();
 */
 }
+
+
+
+
+
+
+
+/*
+-------------
+int Function :: get_block_number(bitset<bit_qnt> address) {
+
+	
+  bitset<bit_identify_block> ab;
+      
+  for(int i = bit_qnt; i >= 2; i--) {
+    ab[i] = address[i];
+  }
+
+  ab >>= 2;  //fix the first number that wasnt caugth"
+   
+  return (int)(ab.to_ulong());  //convert binary to int
+}
+
+
+int Function :: find_beginning_block(bitset<bit_qnt>, int current_block) {
+
+  unsigned int i = 0;
+  bool stop = false;
+  
+  for(; i < main_memory.size(); i++) {
+    for(auto [data, address] : main_memory[i]) {
+      if(current_block == get_block_number(address)) {
+	stop = true;
+	break;
+      } 
+    }
+    if(stop) { break; }
+  }
+  return i;
+}
+
+
+bitset<bit_qnt> Function :: main_memory_get_value(bitset<bit_qnt> typed_address) {
+
+  bitset<bit_qnt> value;
+  bool stop = false;
+  
+  for(unsigned int i = 0; i < main_memory.size(); i++) {
+    for(auto [data, address] : main_memory[i]) {
+      if(address == typed_address) {
+	value = data;
+	stop = true;
+	break;
+      }
+    }
+    if(stop) { break; }
+  }
+  return value;
+}
+
+
+
+
+
+
+void Function :: write_content_main_memory() { //option 2
+
+  bitset<bit_qnt> typed_address, typed_data, set_bit(1);
+  
+  cout << "\n\t Enter the address: ";
+  cin >> typed_address;
+
+  cout << "\t Enter the value:   ";
+  cin >> typed_data;
+
+  
+  bool tag_found = cache_memory_search_tag(typed_address);
+  int free_row_index = cache_memory_check_valid_bit_0();
+  int displacement = get_displacement(typed_address);
+  int current_block = get_block_number(typed_address);
+
+    
+  //there is not data in the cache, and valid bit is 0
+  if((cache_memory_tag_line == -1 && free_row_index >= 0)) {
+
+    miss_write++;
+    
+    //set valid bit
+    cache_memory[free_row_index][valid_bit_column] = set_bit;
+
+    //set tag
+    cache_memory[free_row_index][tag_column] = typed_address;
+
+    //set dirty-bit
+    cache_memory[free_row_index][dirty_bit_column] = set_bit;
+
+    //set value
+    cache_memory[free_row_index][data_column+displacement] = typed_data;
+
+    //increment count LFU
+    cache_memory_increment_lfu(free_row_index);
+    
+    show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
+  }
+
+  //put new data in another place
+  else if(!tag_found) {
+    
+    cache_memory_find_tag_0(); //search for an available tag
+
+    miss_write++;
+
+    //set valid bit
+    cache_memory[free_row_index][valid_bit_column] = set_bit;
+
+    //set tag
+    cache_memory[free_row_index][tag_column] = typed_address;
+
+    //set dirty-bit
+    cache_memory[free_row_index][dirty_bit_column] = set_bit;
+    
+    //set value
+    cache_memory[free_row_index][data_column+displacement] = typed_data;
+
+    //increment count LFU
+    cache_memory_increment_lfu(free_row_index);
+
+    show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
+  }
+
+  //if foundtag and displacement is the same or different
+  else if(tag_found) {
+
+    hit_write++;
+     
+    cache_memory[cache_memory_tag_line][data_column+displacement] = typed_data;
+
+    //increment count LFU
+    cache_memory_increment_lfu(cache_memory_tag_line);
+    
+    show_info(typed_data, cache_memory_tag_line+1, displacement, current_block, false);
+  }
+  
+  update_info();      
+}
+*/
