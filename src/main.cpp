@@ -31,8 +31,7 @@ int main ()
 	{
 		std::cout << "Error attaching the segment shmat" << std::endl;
 		return -1;
-	}
-	
+	}	
 
 	int choice = 0;
 	bool exit = false;

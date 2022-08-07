@@ -136,23 +136,7 @@ void RAM::set_value(std::bitset<bit_qnt> new_address, std::bitset<bit_qnt> new_v
 
 void RAM::read_content()
 {
-	/*	
-		short int shmid;
-		key_t key = 0001;
 
-
-		if ((shmid = shmget(key, SHMSZ, 0666)) < 0)
-		{
-		std::cout << "Error creating the segment shmget" << std::endl;
-		return;
-		}
-
-		if ()
-		{
-		std::cout << "Error attaching the segment shmat" << std::endl;
-		return;
-		}
-	*/
 	std::cout << "tag found\? " << *cache_tag_found << "\n\n";
 	
 	//bool tag_found = cache_memory_search_tag(typed_address);

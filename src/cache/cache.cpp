@@ -14,13 +14,18 @@
 
 int main ()
 {
-	Cache cache_memory;	
-	cache_memory.init();
+	Cache cache;	
 	
 	while (1)
-	{
-		
-		
+	{		
+		switch (*cache.chosen_option)
+		{
+		case 1:
+			cache.search_tag();
+			*cache.chosen_option = 0;
+			break;
+	   
+		}
 	}
   
 	return 0;

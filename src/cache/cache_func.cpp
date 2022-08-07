@@ -4,6 +4,36 @@
 Cache::Cache()
 {
 	info_header();
+	init();
+
+	// reading data
+	int shmid;
+	
+	if ((shmid = shmget(key, SHMSZ, 0666)) < 0)
+	{
+		std::cout << "Error creating the segment shmget" << std::endl;
+		return;
+	}
+
+	if ((typed_info     = (std::bitset<bit_qnt>*)shmat(shmid, NULL, 0)) == (std::bitset<bit_qnt>*) -1 ||
+		(chosen_option  = (int*)shmat(shmid, NULL, 0))                  == (int*) -1                  )
+	{
+		std::cout << "Error attaching the segment shmat" << std::endl;
+		return;
+	}
+	
+	// writing data	
+	if ((shmid = shmget(key, SHMSZ, IPC_CREAT | 0666)) < 0)
+	{
+		std::cout << "Error creating the segment shmget" << std::endl;
+		return;
+	}
+	
+	if ((cache_tag_found = (bool*)shmat(shmid, NULL, 0)) == (bool*) -1)
+	{
+		std::cout << "Error attaching the segment shmat" << std::endl;
+		return;
+	}
 }
 
 
@@ -17,7 +47,7 @@ void Cache::info_header()
 
 void Cache::init()
 {
-	cache_memory.resize(row_qnt, std::vector<std::bitset<bit_qnt>>(column_qnt, 0));
+	cache.resize(row_qnt, std::vector<std::bitset<bit_qnt>>(column_qnt, 0));
 
 	std::cout << "\033[1;32m   |--------------------------------------------------------------------------------------------------------------|\033[0m\n";
   
@@ -28,7 +58,7 @@ void Cache::init()
 		for (int j = 0; j < column_qnt; j++)
 		{
 			std::bitset<bit_qnt> aa(0);
-			cache_memory[i][j] = aa;
+			cache[i][j] = aa;
 
 			//valid, dirty bit
 			if (j == 0 || j == 2)
@@ -63,81 +93,67 @@ void Cache::init()
 }
 
 
-void Cache::search_tag(std::bitset<bit_qnt> typed_address)
-{
-	short int shmid;
-	key_t key = 0002; // identifier of the shared memory segment
-	bool *tag_found;
-
-	if ((shmid = shmget(key, SHMSZ, IPC_CREAT | 0666)) < 0)
-	{
-		std::cout << "Error creating the segment shmget" << std::endl;
-		return;
-	}
-
-	if ((tag_found = (bool*)shmat(shmid, NULL, 0)) == (bool*) -1)
-	{
-		std::cout << "Error attaching the segment shmat" << std::endl;
-		return;
-	}
-	
+void Cache::search_tag()
+{	
 	int count_bit_hit = 0;
-
-	//fetch a tag to compare
+	*cache_tag_found = true;
+	std::cout << "After>> " << *typed_info;
+   
 	for (int i = 0; i < row_qnt; i++)
 	{   
-		if (cache_memory[i][valid_bit_column] == 1) //exist some data in this row
-		{ 
-			std::bitset<bit_qnt> fetched_tag(cache_memory[i][tag_column]);
-
+		if (cache[i][valid_bit_column] == 1) // exist some data in this row
+		{  
+			std::bitset<bit_qnt> fetched_tag(cache[i][tag_column]);
+/*
 			//compare the fethed tag
 			for (int j = 6; j > 1; j--)
 			{
-				if (fetched_tag[j] != typed_address[j])
+				if (fetched_tag[j] != tag)
 				{
 					count_bit_hit = 0;
 					break;
-				}
+					} 
 				
 				count_bit_hit++;
 			}
 
 			if (count_bit_hit == 5) // all bits matches, so the block is in the cache
 			{ 
-				*tag_found = true;
+				*cache_tag_found = true;
 				tag_line = i;
 				break;
 			}
+ */
 		}
 	}
 }
 
 
 /*
-  void Function :: cache_memory_find_tag_0() {
+  void Function :: cache_find_tag_0() {
   
   bitset<bit_qnt> zero(0);
   
   //fetch a tag to compare
-  for(int i = 1; i < cache_memory_row; i++) {
+  for(int i = 1; i < cache_row; i++) {
 
-  bitset<bit_qnt> fetched_tag(cache_memory[i][tag_column]);
+  bitset<bit_qnt> fetched_tag(cache[i][tag_column]);
       
   if(fetched_tag == zero) {
-  cache_memory_tag_line = i;
+  cache_tag_line = i;
   break;
   }
   }  
   }
 
 
-  int Function :: cache_memory_check_valid_bit_0() {
+  int Function :: cache_check_valid_bit_0() {
 
   int found_valid_bit_0_index = -1;
   bitset<bit_qnt> zero(0);
 
-  for(int i = 0; i < cache_memory_row; i++) {
-  if(cache_memory[i][valid_bit_column] == zero) {
+  for(int i = 0; i < cache_row; i++) {
+  if(cache[i][valid_bit_column] == zero) {
   found_valid_bit_0_index = i;
   break;
   }
@@ -146,12 +162,12 @@ void Cache::search_tag(std::bitset<bit_qnt> typed_address)
   }
 
 
-  bool Function :: cache_memory_check_dirty_bit_0(int line) {
+  bool Function :: cache_check_dirty_bit_0(int line) {
 
   bool found_dirty_bit_0 = false;
   bitset<bit_qnt> zero(0);
 
-  if(cache_memory[line][dirty_bit_column] == zero) {
+  if(cache[line][dirty_bit_column] == zero) {
   found_dirty_bit_0 = true;
   }
 
@@ -166,7 +182,7 @@ void Cache::search_tag(std::bitset<bit_qnt> typed_address)
   
   for(int i = index; i <= index+3; i++, data_index++) {
   for(auto [data, address] : main_memory[i]) {
-  cache_memory[free_row_index][data_index] = data;
+  cache[free_row_index][data_index] = data;
   }
   } 
   }
@@ -184,25 +200,25 @@ void Cache::search_tag(std::bitset<bit_qnt> typed_address)
   }
 
 
-  void Function :: cache_memory_increment_lfu(int index) {
+  void Function :: cache_increment_lfu(int index) {
   
   int aux_int;
-  aux_int = (int)(cache_memory[index][count_column].to_ulong()); //convert binary to int
+  aux_int = (int)(cache[index][count_column].to_ulong()); //convert binary to int
   aux_int += 1; 
   bitset<bit_qnt> aux(aux_int);  //convert the new value to binary
-  cache_memory[index][count_column] = aux; //save the value
+  cache[index][count_column] = aux; //save the value
   }
 
 
-  int Function :: cache_memory_get_minimum_counter() {
+  int Function :: cache_get_minimum_counter() {
 
   int m = 1E7;
   int line = -1;
   
-  for(unsigned int i = 0; i < cache_memory.size(); i++) {
+  for(unsigned int i = 0; i < cache.size(); i++) {
     
-  if((int)(cache_memory[i][count_column].to_ulong()) < m) {
-  m = (int)cache_memory[i][count_column].to_ulong();
+  if((int)(cache[i][count_column].to_ulong()) < m) {
+  m = (int)cache[i][count_column].to_ulong();
   line = i;
   }  
   }
@@ -211,10 +227,10 @@ void Cache::search_tag(std::bitset<bit_qnt> typed_address)
   // int m = 0;
   // int line = -1;
   
-  // for(int i = 0; i < cache_memory.size(); i++) {
+  // for(int i = 0; i < cache.size(); i++) {
     
-  //   if((int)(cache_memory[i][count_column].to_ulong()) > m) {
-  //     m = (int)cache_memory[i][count_column].to_ulong();
+  //   if((int)(cache[i][count_column].to_ulong()) > m) {
+  //     m = (int)cache[i][count_column].to_ulong();
   //     line = i;
   //   }  
   // }
@@ -235,20 +251,20 @@ void Cache::search_tag(std::bitset<bit_qnt> typed_address)
 
 	cout << "\033[1;32m   |--------------------------------------------------------------------------------------------------------------|\033[0m\n";
   
-	for(int i = 0; i < cache_memory_row; i++) {
+	for(int i = 0; i < cache_row; i++) {
 		cout << "   \033[1;32m|\b\b\b\033[0m";
     
-		for(int j = 0; j < cache_memory_column; j++) {	
+		for(int j = 0; j < cache_column; j++) {	
 
 			if(j == 0 || j == 2) { //valid, dirty bit
-				bitset<bit_qnt> aux(cache_memory[i][j]);
+				bitset<bit_qnt> aux(cache[i][j]);
 				cout << "\t" << aux[0];
 			}
 			else if(j == 1) { //tag
 
 				cout << "\t   ";
 
-				bitset<bit_qnt> aux(cache_memory[i][j]);
+				bitset<bit_qnt> aux(cache[i][j]);
 				for(int i = 6; i > 1; i--) {
 					cout << aux[i];
 				}
@@ -257,13 +273,13 @@ void Cache::search_tag(std::bitset<bit_qnt> typed_address)
 	
 				cout << "\t   " ;
 
-				bitset<bit_qnt> aux(cache_memory[i][j]);
+				bitset<bit_qnt> aux(cache[i][j]);
 				for(int i = 2; i >= 0; i--) {
 					cout << aux[i];
 				}
 			}
 			else { // data
-				cout << "\t " << cache_memory[i][j];
+				cout << "\t " << cache[i][j];
 			}      
 		}
 		cout << "\033[1;32m    |\n\033[1;32m   |--------------------------------------------------------------------------------------------------------------|\033[0m\n";

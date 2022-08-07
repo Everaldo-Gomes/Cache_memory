@@ -15,7 +15,7 @@ int main ()
 		{
 		case 1:
 			std::cout << "1\n";
-			//ram.update_info();
+			ram.read_content();
 			*ram.chosen_option = 0;
 			break;
 		

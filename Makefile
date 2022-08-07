@@ -2,7 +2,7 @@ path_bin =  ./bin
 compiler_flags = g++ -g -Wall -std=c++17
 
 
-all: main ram cache
+all: main ram cache init_menu
 
 
 main: ./src/main.cpp
@@ -14,10 +14,13 @@ ram: ./src/RAM/ram.cpp
 cache: ./src/cache/cache.cpp
 	${compiler_flags} ./src/cache/*.cpp -o ${path_bin}/cache.exe
 
-
-run:
+init_menu:
 	gnome-terminal -- ${path_bin}/main.exe
+
+init_ram:	
 	gnome-terminal -- ${path_bin}/ram.exe
+
+init_cache:	
 	gnome-terminal -- ${path_bin}/cache.exe
 
 clean:
